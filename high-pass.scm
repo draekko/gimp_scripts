@@ -13,7 +13,8 @@
 ; v1.1 fixes "bug" created by bug fix for gimp 2.6.9 in gimp-histogram
 ; v1.2 changed to a different layer blend mode (thanks Blacklemon67) that
 ;      has less histogram banding, by eliminating the need for the contrast boost.
-; v1.3 fixed to replace deprecated function calls for gimp 2.9 (Draekko https://github.com/draekko/gimp_scripts)
+; v1.3 fixed to replace deprecated function calls for gimp 2.9, added option to 
+;      select desaturation mode to use. (draekko.software@gmail.com)
 ;
 
 ; License:
@@ -62,7 +63,7 @@
       (begin
         (set! colours-layer (car (gimp-layer-copy inLayer FALSE)))
 	    (gimp-image-insert-layer img colours-layer -1 0)
-	    (gimp-image-lower-layer img colours-layer)	
+	    (gimp-image-lower-item img colours-layer)	
 		(gimp-item-set-name colours-layer "colours")
 		(gimp-image-set-active-layer img working-layer)
 	  )
@@ -70,7 +71,9 @@
 	
     ;if Greyscale, desaturate
 	(if (or (= inMode 2) (= inMode 3))
-	  (gimp-desaturate working-layer) 	
+        (begin
+            (gimp-drawable-desaturate working-layer DESATURATE-LUMINOSITY)
+        )
 	)
 	
 	;Duplicate on top and blur
